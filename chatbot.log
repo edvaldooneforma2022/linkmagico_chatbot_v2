@@ -1,0 +1,12 @@
+{"level":"info","message":"🚀 LinkMágico Chatbot v2.0 iniciado na porta 3001","timestamp":"2025-07-14T16:00:40.034Z"}
+{"level":"info","message":"🔗 Acesse: http://localhost:3001","timestamp":"2025-07-14T16:00:40.036Z"}
+{"level":"info","message":"💬 Chat: http://localhost:3001/chat?url=SUA_URL&robot=@SeuBot","timestamp":"2025-07-14T16:00:40.036Z"}
+{"level":"info","message":"[AdvancedPageExtractor] Iniciando extração da URL: https://www.mercadolivre.com.br/smartphone-samsung-galaxy-a15-128gb-azul-claro-4gb-ram-67-cam-tripla-50mp/p/MLB29090234","timestamp":"2025-07-14T16:02:01.255Z"}
+{"level":"info","message":"[AdvancedPageExtractor] URL final após redirecionamentos: https://www.mercadolivre.com.br/under-armour-curry-flow-10-masculino-adultos/p/MLB29090234","timestamp":"2025-07-14T16:02:08.808Z"}
+{"level":"info","message":"[AdvancedPageExtractor] Extração concluída: Under Armour Curry Flow 10 Masculino Adultos","timestamp":"2025-07-14T16:02:08.819Z"}
+{"level":"info","message":"[AdvancedPageExtractor] Iniciando extração da URL: https://www.mercadolivre.com.br/under-armour-curry-flow-10-masculino-adultos/p/MLB29090234","timestamp":"2025-07-14T16:02:29.388Z"}
+{"level":"info","message":"[AdvancedPageExtractor] URL final após redirecionamentos: https://www.mercadolivre.com.br/under-armour-curry-flow-10-masculino-adultos/p/MLB29090234","timestamp":"2025-07-14T16:02:35.244Z"}
+{"level":"info","message":"[AdvancedPageExtractor] Extração concluída: Under Armour Curry Flow 10 Masculino Adultos","timestamp":"2025-07-14T16:02:35.252Z"}
+{"level":"info","message":"🚀 LinkMágico Chatbot v2.0 iniciado na porta 3000","timestamp":"2025-07-14T16:32:26.257Z"}
+{"level":"info","message":"🔗 Acesse: http://localhost:3000","timestamp":"2025-07-14T16:32:26.259Z"}
+{"level":"info","message":"💬 Chat: http://localhost:3000/chat?url=SUA_URL&robot=@SeuBot","timestamp":"2025-07-14T16:32:26.260Z"}

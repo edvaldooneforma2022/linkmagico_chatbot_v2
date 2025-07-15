@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 LinkMágico Chatbot v2.0 - IA Conversacional para Vendas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group input[type="text"], 
+        .form-group input[type="url"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #dc3545;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .new-feature {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .new-feature h3 {
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        
+        .new-feature p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-container {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-link {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        /* Botões de atalho no rodapé */
+        .footer-shortcuts {
+            display: flex;
+            gap: 8px;
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .shortcut-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .shortcut-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .shortcut-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Chat Interface */
+        .chat-container {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            margin-top: 20px;
+            height: 400px;
+            border: 2px solid #e9ecef;
+            flex-direction: column;
+        }
+        
+        .chat-container.show {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .chat-send-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message.bot {
+            background: white;
+            border: 1px solid #ddd;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .footer-shortcuts {
+                flex-direction: column;
+            }
+            
+            .shortcut-btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 LinkMágico Chatbot v2.0</h1>
+            <p>IA Conversacional Inteligente para Vendas Online</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="new-feature">
+                <h3>🚀 NOVA VERSÃO: Chatbot Inteligente!</h3>
+                <p>Seus clientes agora conversam com uma IA que conhece seu produto em detalhes!</p>
+            </div>
+            
+            <form id="chatbotForm">
+                <div class="form-group">
+                    <label for="robotName">🤖 Nome do Assistente Virtual:</label>
+                    <input 
+                        type="text" 
+                        id="robotName" 
+                        placeholder="@VendedorPro"
+                        required
+                    >
+                    <div class="error-message" id="robotNameError">O nome deve começar com @</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="salesPageUrl">🔗 URL da Página de Vendas:</label>
+                    <input 
+                        type="url" 
+                        id="salesPageUrl" 
+                        placeholder="https://exemplo.com/meu-produto"
+                        required
+                    >
+                    <div class="error-message" id="salesPageUrlError">Por favor, insira uma URL válida</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="customInstructions">📝 Instruções Personalizadas (opcional):</label>
+                    <textarea 
+                        id="customInstructions" 
+                        placeholder="Adicione instruções específicas para o chatbot, como tom de voz, informações extras, etc."
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="generate-btn" id="generateBtn">
+                    🚀 Ativar Chatbot Inteligente
+                </button>
+            </form>
+            
+            <div class="result-container" id="resultContainer">
+                <div class="result-title">
+                    🎉 Seu Chatbot foi ativado!
+                </div>
+                <div class="result-link" id="resultLink"></div>
+                <button class="copy-btn" id="copyBtn">📋 Copiar Link do Chat</button>
+            </div>
+            
+            <!-- Interface de Chat -->
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-header">
+                    💬 Teste seu Chatbot Aqui
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        Olá! Sou seu assistente virtual. Como posso ajudá-lo hoje?
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem...">
+                    <button class="chat-send-btn" id="chatSendBtn">Enviar</button>
+                </div>
+            </div>
+            
+            <!-- Botões de Atalho no Rodapé -->
+            <div class="footer-shortcuts">
+                <button class="shortcut-btn active" data-tab="chatbot">
+                    🤖 Chatbot
+                </button>
+                <button class="shortcut-btn" data-tab="extractor">
+                    📊 Extrator
+                </button>
+                <button class="shortcut-btn" data-tab="prompt">
+                    💭 Prompt
+                </button>
+                <button class="shortcut-btn" data-tab="social">
+                    📱 Redes Sociais
+                </button>
+                <button class="shortcut-btn" data-tab="analytics">
+                    📈 Analytics
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utilitários
+        const Utils = {
+            log: (message) => {
+                const timestamp = new Date().toISOString();
+                console.log(`[${timestamp}] LinkMágico Chatbot v2.0: ${message}`);
+            },
+            
+            validateRobotName: (name) => {
+                return name.startsWith('@') && name.length > 1;
+            },
+            
+            validateUrl: (url) => {
+                try {
+                    new URL(url);
+                    return true;
+                } catch {
+                    return false;
+                }
+            },
+            
+            extractFinalUrl: async (url) => {
+                try {
+                    // Simula a extração da URL final após redirecionamentos
+                    Utils.log(`Extraindo URL final de: ${url}`);
+                    return url; // Por enquanto retorna a URL original
+                } catch (error) {
+                    Utils.log(`Erro ao extrair URL final: ${error.message}`);
+                    return url;
+                }
+            }
+        };
+
+        // Elementos DOM
+        const form = document.getElementById('chatbotForm');
+        const robotNameInput = document.getElementById('robotName');
+        const salesPageUrlInput = document.getElementById('salesPageUrl');
+        const customInstructionsInput = document.getElementById('customInstructions');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultLink = document.getElementById('resultLink');
+        const copyBtn = document.getElementById('copyBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+
+        // Validação em tempo real
+        robotNameInput.addEventListener('input', function() {
+            const isValid = Utils.validateRobotName(this.value);
+            const errorElement = document.getElementById('robotNameError');
+            
+            if (this.value && !isValid) {
+                this.classList.add('error');
+                errorElement.style.display = 'block';
+            } else {
+                this.classList.remove('error');
+                errorElement.style.display = 'none';
+            }
+        });
+
+        salesPageUrlInput.addEventListener('input', function() {
+            const isValid = Utils.validateUrl(this.value);
+            const errorElement = document.getElementById('salesPageUrlError');
+            
+            if (this.value && !isValid) {
+                this.classList.add('error');
+                errorElement.style.display = 'block';
+            } else {
+                this.classList.remove('error');
+                errorElement.style.display = 'none';
+            }
+        });
+
+        // Geração do chatbot
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            Utils.log('Iniciando ativação do chatbot v2.0');
+            
+            // Validações
+            const robotName = robotNameInput.value.trim();
+            const salesPageUrl = salesPageUrlInput.value.trim();
+            const customInstructions = customInstructionsInput.value.trim();
+            
+            if (!Utils.validateRobotName(robotName)) {
+                alert('O nome do assistente deve começar com @');
+                return;
+            }
+            
+            if (!Utils.validateUrl(salesPageUrl)) {
+                alert('Por favor, insira uma URL válida da página de vendas');
+                return;
+            }
+            
+            // Ativar chatbot
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Extraindo dados e ativando...';
+            
+            try {
+                // Extrair URL final
+                const finalUrl = await Utils.extractFinalUrl(salesPageUrl);
+                Utils.log(`URL final extraída: ${finalUrl}`);
+                
+                // Simular extração de dados
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Gerar link do chatbot
+                const chatbotLink = generateChatbotLink(robotName, finalUrl, customInstructions);
+                
+                Utils.log(`Chatbot ativado: ${chatbotLink}`);
+                
+                // Exibir resultado
+                resultLink.textContent = chatbotLink;
+                resultContainer.classList.add('show');
+                chatContainer.classList.add('show');
+                
+                // Scroll para o resultado
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                Utils.log(`Erro ao ativar chatbot: ${error.message}`);
+                alert('Erro ao ativar o chatbot. Tente novamente.');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🚀 Ativar Chatbot Inteligente';
+            }
+        });
+
+        // Função para gerar o link do chatbot
+        function generateChatbotLink(robotName, salesPageUrl, customInstructions) {
+            const baseUrl = window.location.origin;
+            const params = new URLSearchParams({
+                robot: robotName,
+                url: salesPageUrl,
+                instructions: customInstructions || '',
+                v: '2.0'
+            });
+            
+            return `${baseUrl}/chat?${params.toString()}`;
+        }
+
+        // Sistema de chat
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Simular resposta do bot
+            setTimeout(() => {
+                const responses = [
+                    'Entendo sua dúvida! Com base nas informações do produto, posso te ajudar.',
+                    'Esse produto tem excelentes benefícios. Gostaria de saber mais sobre algum específico?',
+                    'Baseado nos depoimentos de outros clientes, esse produto tem ótimos resultados.',
+                    'Posso te explicar melhor sobre as características do produto. O que mais te interessa?'
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(randomResponse);
+            }, 1000);
+        }
+
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Copiar link
+        copyBtn.addEventListener('click', function() {
+            const link = resultLink.textContent;
+            
+            navigator.clipboard.writeText(link).then(() => {
+                const originalText = this.textContent;
+                this.textContent = '✅ Copiado!';
+                this.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.background = '#28a745';
+                }, 2000);
+                
+                Utils.log('Link copiado para a área de transferência');
+            }).catch(() => {
+                // Fallback para navegadores mais antigos
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                this.textContent = '✅ Copiado!';
+                setTimeout(() => {
+                    this.textContent = '📋 Copiar Link do Chat';
+                }, 2000);
+            });
+        });
+
+        // Sistema de abas/atalhos
+        document.querySelectorAll('.shortcut-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remover classe active de todos os botões
+                document.querySelectorAll('.shortcut-btn').forEach(b => b.classList.remove('active'));
+                
+                // Adicionar classe active ao botão clicado
+                this.classList.add('active');
+                
+                const tab = this.dataset.tab;
+                Utils.log(`Aba selecionada: ${tab}`);
+                
+                // Por enquanto, apenas log. Implementar navegação entre abas posteriormente
+                if (tab !== 'chatbot') {
+                    alert(`Funcionalidade "${tab}" será implementada em breve!`);
+                    // Voltar para a aba chatbot
+                    document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Salvar configurações no localStorage
+        function saveSettings() {
+            const settings = {
+                robotName: robotNameInput.value,
+                customInstructions: customInstructionsInput.value
+            };
+            localStorage.setItem('linkmagico_chatbot_v2_settings', JSON.stringify(settings));
+        }
+
+        // Carregar configurações do localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('linkmagico_chatbot_v2_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                if (settings.robotName) robotNameInput.value = settings.robotName;
+                if (settings.customInstructions) customInstructionsInput.value = settings.customInstructions;
+            }
+        }
+
+        // Salvar configurações quando os campos mudarem
+        robotNameInput.addEventListener('change', saveSettings);
+        customInstructionsInput.addEventListener('change', saveSettings);
+
+        // Carregar configurações ao inicializar
+        loadSettings();
+
+        Utils.log('LinkMágico Chatbot v2.0 inicializado com sucesso');
+    </script>
+</body>
+</html>
+
