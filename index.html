@@ -421,6 +421,12 @@
                 <button class="shortcut-btn" data-tab="social">
                     📱 Redes Sociais
                 </button>
+                <button class="shortcut-btn" data-tab="tiktok">
+                    🎵 TikTok
+                </button>
+                <button class="shortcut-btn" data-tab="kwai">
+                    🎥 Kwai
+                </button>
                 <button class="shortcut-btn" data-tab="linkedin">
                     💼 LinkedIn
                 </button>
@@ -706,6 +712,16 @@
                         showTelegramInterface();
                         break;
                     
+                    case 'tiktok':
+                        // Funcionalidade específica do TikTok
+                        showTikTokInterface();
+                        break;
+                    
+                    case 'kwai':
+                        // Funcionalidade específica do Kwai
+                        showKwaiInterface();
+                        break;
+                    
                     case 'analytics':
                         // Funcionalidade de analytics
                         showAnalyticsInterface();
@@ -843,6 +859,40 @@
             navigator.clipboard.writeText(telegramLink);
             alert('Link do Telegram copiado para a área de transferência!');
             window.open(telegramLink, '_blank');
+        }
+
+        function showTikTokInterface() {
+            const salesPageUrl = salesPageUrlInput.value.trim();
+            if (!salesPageUrl) {
+                alert("Por favor, insira uma URL da página de vendas primeiro.");
+                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
+                document.querySelector("[data-tab=\"tiktok\"]").classList.remove("active");
+                return;
+            }
+            
+            const tiktokMessage = `Confira este produto incrível: ${salesPageUrl}`;
+            const tiktokLink = `https://www.tiktok.com/share/video?url=${encodeURIComponent(salesPageUrl )}&text=${encodeURIComponent(tiktokMessage)}`;
+            
+            navigator.clipboard.writeText(tiktokLink);
+            alert("Link do TikTok copiado para a área de transferência!");
+            window.open(tiktokLink, "_blank");
+        }
+
+        function showKwaiInterface() {
+            const salesPageUrl = salesPageUrlInput.value.trim();
+            if (!salesPageUrl) {
+                alert("Por favor, insira uma URL da página de vendas primeiro.");
+                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
+                document.querySelector("[data-tab=\"kwai\"]").classList.remove("active");
+                return;
+            }
+            
+            const kwaiMessage = `Dê uma olhada neste produto: ${salesPageUrl}`;
+            const kwaiLink = `https://www.kwai.com/share?url=${encodeURIComponent(salesPageUrl )}&text=${encodeURIComponent(kwaiMessage)}`;
+            
+            navigator.clipboard.writeText(kwaiLink);
+            alert("Link do Kwai copiado para a área de transferência!");
+            window.open(kwaiLink, "_blank");
         }
 
         function showAnalyticsInterface() {

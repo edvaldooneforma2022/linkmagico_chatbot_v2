@@ -24,7 +24,8 @@
     "helmet": "^7.0.0",
     "express-rate-limit": "^6.7.0",
     "winston": "^3.8.2",
-    "puppeteer": "^21.0.0",
+    "puppeteer-core": "^21.0.0",
+    "@puppeteer/browsers": "^1.8.0",
     "node-fetch": "^2.6.7",
     "dotenv": "^16.3.1"
   },
@@ -35,4 +36,3 @@
     "node": ">=16.0.0"
   }
 }
-

@@ -9,7 +9,8 @@ const helmet = require("helmet");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const winston = require("winston");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+const { launch } = require("@puppeteer/browsers");
 const fetch = require("node-fetch");
 const crypto = require("crypto");
 const fs = require("fs");
@@ -71,7 +72,8 @@ class AdvancedPageExtractor {
     try {
       log(`Iniciando extração da URL: ${url}`);
       
-      browser = await puppeteer.launch({
+      browser = await launch({
+        channel: "chrome", // Use a versão estável do Chrome
         headless: true,
         args: [
           "--no-sandbox",
@@ -81,10 +83,8 @@ class AdvancedPageExtractor {
           "--no-first-run",
           "--no-zygote",
           "--disable-gpu",
-          // Adicionar argumentos específicos para o Render/Heroku
-          "--single-process" // Importante para ambientes com memória limitada
+          "--single-process"
         ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
       });
 
       const page = await browser.newPage();
@@ -113,7 +113,7 @@ class AdvancedPageExtractor {
           if (!text) return "";
           return text
             .replace(/\s+/g, " ")
-            .replace(/[^\w\sÀ-ÿ,.!?€$%()\-"]/g, "")
+            .replace(/[^\w\sÀ-ÿ,.!?€$@%()\-"]/g, "")
             .trim();
         };
         
@@ -359,7 +359,7 @@ class IntelligentChatbot {
     
     if (message.includes("depoimento") || message.includes("avaliação") || message.includes("opinião")) {
       const testimonial = this.productData.testimonials[0];
-      return `Aqui está um depoimento real: \"${testimonial}\". Muitos clientes têm resultados similares!`;
+      return `Aqui está um depoimento real: "${testimonial}". Muitos clientes têm resultados similares!`;
     }
     
     if (message.includes("comprar") || message.includes("adquirir") || message.includes("quero")) {
