@@ -1,14 +1,17 @@
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const cors = require("cors"); // Importar o pacote cors
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Chave da API do ScraperAPI (substitua pela sua chave real)
+const SCRAPERAPI_API_KEY = "f1f7d64f3b39ebcac6505cd8e621e57a";
+
 app.use(express.json());
 app.use(express.static("public"));
-app.use(cors()); // Usar o middleware cors
+app.use(cors());
 
 // Rota para extração de dados
 app.post("/api/extract", async (req, res) => {
@@ -19,7 +22,9 @@ app.post("/api/extract", async (req, res) => {
     }
 
     try {
-        const { data } = await axios.get(url);
+        // Usar ScraperAPI para fazer a requisição
+        const scraperApiUrl = `http://api.scraperapi.com/?api_key=${SCRAPERAPI_API_KEY}&url=${encodeURIComponent(url )}`;
+        const { data } = await axios.get(scraperApiUrl);
         const $ = cheerio.load(data);
 
         // Exemplo de extração de dados (ajuste conforme a estrutura da página)
@@ -37,12 +42,12 @@ app.post("/api/extract", async (req, res) => {
             benefits,
             testimonials,
             cta,
-            finalUrl: url // Por enquanto, retorna a URL original
+            finalUrl: url
         });
 
     } catch (error) {
-        console.error("Erro ao extrair dados:", error.message);
-        res.status(500).json({ error: "Erro ao extrair dados da URL fornecida." });
+        console.error("Erro ao extrair dados com ScraperAPI:", error.message);
+        res.status(500).json({ error: "Erro ao extrair dados da URL fornecida via ScraperAPI." });
     }
 });
 
