@@ -81,6 +81,12 @@
             resize: vertical;
         }
         
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
         .form-group input.error,
         .form-group textarea.error {
             border-color: #dc3545;
@@ -365,7 +371,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="customInstructions">📝 Instruções Personalizadas (opcional ):</label>
+                    <label for="customInstructions">📝 Instruções Personalizadas (opcional):</label>
                     <textarea 
                         id="customInstructions" 
                         placeholder="Adicione instruções específicas para o chatbot, como tom de voz, informações extras, etc."
@@ -386,7 +392,7 @@
             </div>
             
             <!-- Interface de Chat -->
-            <div class="chat-container" id="chatContainer" style="display: none;">
+            <div class="chat-container" id="chatContainer">
                 <div class="chat-header">
                     💬 Teste seu Chatbot Aqui
                 </div>
@@ -443,7 +449,7 @@
             },
             
             validateRobotName: (name) => {
-                return name.startsWith("@") && name.length > 1;
+                return name.startsWith('@') && name.length > 1;
             },
             
             validateUrl: (url) => {
@@ -468,51 +474,51 @@
         };
 
         // Elementos DOM
-        const form = document.getElementById("chatbotForm");
-        const robotNameInput = document.getElementById("robotName");
-        const salesPageUrlInput = document.getElementById("salesPageUrl");
-        const customInstructionsInput = document.getElementById("customInstructions");
-        const generateBtn = document.getElementById("generateBtn");
-        const resultContainer = document.getElementById("resultContainer");
-        const resultLink = document.getElementById("resultLink");
-        const copyBtn = document.getElementById("copyBtn");
-        const chatContainer = document.getElementById("chatContainer");
-        const chatMessages = document.getElementById("chatMessages");
-        const chatInput = document.getElementById("chatInput");
-        const chatSendBtn = document.getElementById("chatSendBtn");
+        const form = document.getElementById('chatbotForm');
+        const robotNameInput = document.getElementById('robotName');
+        const salesPageUrlInput = document.getElementById('salesPageUrl');
+        const customInstructionsInput = document.getElementById('customInstructions');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultLink = document.getElementById('resultLink');
+        const copyBtn = document.getElementById('copyBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
 
         // Validação em tempo real
-        robotNameInput.addEventListener("input", function() {
+        robotNameInput.addEventListener('input', function() {
             const isValid = Utils.validateRobotName(this.value);
-            const errorElement = document.getElementById("robotNameError");
+            const errorElement = document.getElementById('robotNameError');
             
             if (this.value && !isValid) {
-                this.classList.add("error");
-                errorElement.style.display = "block";
+                this.classList.add('error');
+                errorElement.style.display = 'block';
             } else {
-                this.classList.remove("error");
-                errorElement.style.display = "none";
+                this.classList.remove('error');
+                errorElement.style.display = 'none';
             }
         });
 
-        salesPageUrlInput.addEventListener("input", function() {
+        salesPageUrlInput.addEventListener('input', function() {
             const isValid = Utils.validateUrl(this.value);
-            const errorElement = document.getElementById("salesPageUrlError");
+            const errorElement = document.getElementById('salesPageUrlError');
             
             if (this.value && !isValid) {
-                this.classList.add("error");
-                errorElement.style.display = "block";
+                this.classList.add('error');
+                errorElement.style.display = 'block';
             } else {
-                this.classList.remove("error");
-                errorElement.style.display = "none";
+                this.classList.remove('error');
+                errorElement.style.display = 'none';
             }
         });
 
         // Geração do chatbot
-        form.addEventListener("submit", async function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            Utils.log("Iniciando ativação do chatbot v2.0");
+            Utils.log('Iniciando ativação do chatbot v2.0');
             
             // Validações
             const robotName = robotNameInput.value.trim();
@@ -520,18 +526,18 @@
             const customInstructions = customInstructionsInput.value.trim();
             
             if (!Utils.validateRobotName(robotName)) {
-                alert("O nome do assistente deve começar com @");
+                alert('O nome do assistente deve começar com @');
                 return;
             }
             
             if (!Utils.validateUrl(salesPageUrl)) {
-                alert("Por favor, insira uma URL válida da página de vendas");
+                alert('Por favor, insira uma URL válida da página de vendas');
                 return;
             }
             
             // Ativar chatbot
             generateBtn.disabled = true;
-            generateBtn.textContent = "⏳ Extraindo dados e ativando...";
+            generateBtn.textContent = '⏳ Extraindo dados e ativando...';
             
             try {
                 // Extrair URL final
@@ -551,18 +557,18 @@
                 
                 // Exibir resultado
                 resultLink.textContent = chatbotLink;
-                resultContainer.classList.add("show");
-                chatContainer.classList.add("show");
+                resultContainer.classList.add('show');
+                chatContainer.classList.add('show');
                 
                 // Scroll para o resultado
-                resultContainer.scrollIntoView({ behavior: "smooth" });
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
                 
             } catch (error) {
                 Utils.log(`Erro ao ativar chatbot: ${error.message}`);
-                alert("Erro ao ativar o chatbot. Tente novamente.");
+                alert('Erro ao ativar o chatbot. Tente novamente.');
             } finally {
                 generateBtn.disabled = false;
-                generateBtn.textContent = "🚀 Ativar Chatbot Inteligente";
+                generateBtn.textContent = '🚀 Ativar Chatbot Inteligente';
             }
         });
 
@@ -572,8 +578,8 @@
             const params = new URLSearchParams({
                 robot: robotName,
                 url: salesPageUrl,
-                instructions: customInstructions || "",
-                v: "2.0"
+                instructions: customInstructions || '',
+                v: '2.0'
             });
             
             return `${baseUrl}/chat?${params.toString()}`;
@@ -581,8 +587,8 @@
 
         // Sistema de chat
         async function addMessage(content, isUser = false) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `message ${isUser ? "user" : "bot"}`;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
             messageDiv.textContent = content;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -593,7 +599,7 @@
             if (!message) return;
             
             addMessage(message, true);
-            chatInput.value = "";
+            chatInput.value = '';
             
             // Desabilitar input e botão para evitar múltiplas requisições
             chatInput.disabled = true;
@@ -601,10 +607,10 @@
 
             try {
                 const salesPageUrl = salesPageUrlInput.value.trim();
-                const response = await fetch("/api/chat", {
-                    method: "POST",
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         message: message,
@@ -616,7 +622,7 @@
                 addMessage(data.response);
             } catch (error) {
                 Utils.log(`Erro ao enviar mensagem para o chatbot: ${error.message}`);
-                addMessage("Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.");
+                addMessage('Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.');
             } finally {
                 // Reabilitar input e botão
                 chatInput.disabled = false;
@@ -625,99 +631,98 @@
             }
         }
 
-        chatSendBtn.addEventListener("click", sendMessage);
-        chatInput.addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
                 sendMessage();
             }
         });
 
         // Copiar link
-        copyBtn.addEventListener("click", function() {
+        copyBtn.addEventListener('click', function() {
             const link = resultLink.textContent;
             
             navigator.clipboard.writeText(link).then(() => {
                 const originalText = this.textContent;
-                this.textContent = "✅ Copiado!";
-                this.style.background = "#28a745";
+                this.textContent = '✅ Copiado!';
+                this.style.background = '#28a745';
                 
                 setTimeout(() => {
                     this.textContent = originalText;
-                    this.style.background = "#28a745";
+                    this.style.background = '#28a745';
                 }, 2000);
                 
-                Utils.log("Link copiado para a área de transferência");
+                Utils.log('Link copiado para a área de transferência');
             }).catch(() => {
                 // Fallback para navegadores mais antigos
-                const textArea = document.createElement("textarea");
+                const textArea = document.createElement('textarea');
                 textArea.value = link;
                 document.body.appendChild(textArea);
                 textArea.select();
-                document.execCommand("copy");
+                document.execCommand('copy');
                 document.body.removeChild(textArea);
                 
-                this.textContent = "✅ Copiado!";
+                this.textContent = '✅ Copiado!';
                 setTimeout(() => {
-                    this.textContent = "📋 Copiar Link do Chat";
+                    this.textContent = '📋 Copiar Link do Chat';
                 }, 2000);
             });
         });
 
         // Sistema de abas/atalhos
-        document.querySelectorAll(".shortcut-btn").forEach(btn => {
-            btn.addEventListener("click", function() {
+        document.querySelectorAll('.shortcut-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
                 // Remover classe active de todos os botões
-                document.querySelectorAll(".shortcut-btn").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll('.shortcut-btn').forEach(b => b.classList.remove('active'));
                 
                 // Adicionar classe active ao botão clicado
-                this.classList.add("active");
+                this.classList.add('active');
                 
                 const tab = this.dataset.tab;
                 Utils.log(`Aba selecionada: ${tab}`);
                 
                 // Implementar funcionalidades específicas para cada botão
                 switch(tab) {
-                    case "chatbot":
+                    case 'chatbot':
                         // Já está na aba do chatbot - não fazer nada
-                        chatContainer.classList.add("show");
                         break;
                     
-                    case "extractor":
+                    case 'extractor':
                         // Funcionalidade do extrator de dados
                         showExtractorInterface();
                         break;
                     
-                    case "prompt":
+                    case 'prompt':
                         // Funcionalidade de geração de prompts
                         showPromptInterface();
                         break;
                     
-                    case "social":
+                    case 'social':
                         // Funcionalidade de redes sociais
                         showSocialInterface();
                         break;
                     
-                    case "linkedin":
+                    case 'linkedin':
                         // Funcionalidade específica do LinkedIn
                         showLinkedInInterface();
                         break;
                     
-                    case "telegram":
+                    case 'telegram':
                         // Funcionalidade específica do Telegram
                         showTelegramInterface();
                         break;
                     
-                    case "tiktok":
+                    case 'tiktok':
                         // Funcionalidade específica do TikTok
                         showTikTokInterface();
                         break;
                     
-                    case "kwai":
+                    case 'kwai':
                         // Funcionalidade específica do Kwai
                         showKwaiInterface();
                         break;
                     
-                    case "analytics":
+                    case 'analytics':
                         // Funcionalidade de analytics
                         showAnalyticsInterface();
                         break;
@@ -725,8 +730,8 @@
                     default:
                         alert(`Funcionalidade "${tab}" será implementada em breve!`);
                         // Voltar para a aba chatbot
-                        document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                        this.classList.remove("active");
+                        document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                        this.classList.remove('active');
                 }
             });
         });
@@ -735,17 +740,17 @@
         function showExtractorInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
             if (!salesPageUrl) {
-                alert("Por favor, insira uma URL da página de vendas primeiro.");
-                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                document.querySelector("[data-tab=\"extractor\"]").classList.remove("active");
+                alert('Por favor, insira uma URL da página de vendas primeiro.');
+                document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                document.querySelector('[data-tab="extractor"]').classList.remove('active');
                 return;
             }
             
             // Fazer requisição para extrair dados
-            fetch("/api/extract", {
-                method: "POST",
+            fetch('/api/extract', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ url: salesPageUrl })
             })
@@ -755,7 +760,17 @@
                     alert(`Erro na extração: ${data.error}`);
                 } else {
                     // Mostrar dados extraídos
-                    const extractedData = `\nDados Extraídos da Página:\n\nTítulo: ${data.title}\nPreço: ${data.price}\nDescrição: ${data.description}\nBenefícios: ${data.benefits.join(", ")}\nDepoimentos: ${data.testimonials.join(" | ")}\nCTA: ${data.cta}\nURL Final: ${data.finalUrl}\n                    `;
+                    const extractedData = `
+Dados Extraídos da Página:
+
+Título: ${data.title}
+Preço: ${data.price}
+Descrição: ${data.description}
+Benefícios: ${data.benefits.join(', ')}
+Depoimentos: ${data.testimonials.join(' | ')}
+CTA: ${data.cta}
+URL Final: ${data.finalUrl}
+                    `;
                     alert(extractedData);
                 }
             })
@@ -767,17 +782,17 @@
         function showPromptInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
             if (!salesPageUrl) {
-                alert("Por favor, insira uma URL da página de vendas primeiro.");
-                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                document.querySelector("[data-tab=\"prompt\"]").classList.remove("active");
+                alert('Por favor, insira uma URL da página de vendas primeiro.');
+                document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                document.querySelector('[data-tab="prompt"]').classList.remove('active');
                 return;
             }
             
             // Gerar prompt baseado nos dados extraídos
-            fetch("/api/extract", {
-                method: "POST",
+            fetch('/api/extract', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ url: salesPageUrl })
             })
@@ -789,7 +804,7 @@
                     const prompt = generatePromptFromData(data);
                     // Copiar prompt para área de transferência
                     navigator.clipboard.writeText(prompt).then(() => {
-                        alert("Prompt gerado e copiado para a área de transferência!");
+                        alert('Prompt gerado e copiado para a área de transferência!');
                     });
                 }
             })
@@ -799,15 +814,32 @@
         }
 
         function generatePromptFromData(data) {
-            return `Você é um especialista em vendas e marketing digital. Com base nas informações do produto \"${data.title}\", crie conteúdo persuasivo para vendas.\n\nINFORMAÇÕES DO PRODUTO:\n- Título: ${data.title}\n- Preço: ${data.price}\n- Descrição: ${data.description}\n- Principais Benefícios: ${data.benefits.slice(0, 5).join(", ")}\n- Depoimentos: ${data.testimonials.slice(0, 2).join(" | ")}\n- Call-to-Action: ${data.cta}\n\nINSTRUÇÕES:\n1. Crie mensagens de vendas persuasivas\n2. Destaque os principais benefícios\n3. Use os depoimentos para criar prova social\n4. Mantenha um tom conversacional e convincente\n5. Inclua calls-to-action eficazes\n\nPor favor, gere conteúdo de vendas baseado nessas informações.`;
+            return `Você é um especialista em vendas e marketing digital. Com base nas informações do produto "${data.title}", crie conteúdo persuasivo para vendas.
+
+INFORMAÇÕES DO PRODUTO:
+- Título: ${data.title}
+- Preço: ${data.price}
+- Descrição: ${data.description}
+- Principais Benefícios: ${data.benefits.slice(0, 5).join(', ')}
+- Depoimentos: ${data.testimonials.slice(0, 2).join(' | ')}
+- Call-to-Action: ${data.cta}
+
+INSTRUÇÕES:
+1. Crie mensagens de vendas persuasivas
+2. Destaque os principais benefícios
+3. Use os depoimentos para criar prova social
+4. Mantenha um tom conversacional e convincente
+5. Inclua calls-to-action eficazes
+
+Por favor, gere conteúdo de vendas baseado nessas informações.`;
         }
 
         function showSocialInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
             if (!salesPageUrl) {
-                alert("Por favor, insira uma URL da página de vendas primeiro.");
-                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                document.querySelector("[data-tab=\"social\"]").classList.remove("active");
+                alert('Por favor, insira uma URL da página de vendas primeiro.');
+                document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                document.querySelector('[data-tab="social"]').classList.remove('active');
                 return;
             }
             
@@ -816,7 +848,15 @@
             const facebookLink = generateFacebookLink(salesPageUrl);
             const instagramLink = generateInstagramLink(salesPageUrl);
             
-            const socialLinks = `\nLinks para Redes Sociais:\n\nWhatsApp: ${whatsappLink}\nFacebook: ${facebookLink}\nInstagram: ${instagramLink}\n\nOs links foram copiados para a área de transferência.\n            `;
+            const socialLinks = `
+Links para Redes Sociais:
+
+WhatsApp: ${whatsappLink}
+Facebook: ${facebookLink}
+Instagram: ${instagramLink}
+
+Os links foram copiados para a área de transferência.
+            `;
             
             navigator.clipboard.writeText(`WhatsApp: ${whatsappLink}\nFacebook: ${facebookLink}\nInstagram: ${instagramLink}`);
             alert(socialLinks);
@@ -825,36 +865,112 @@
         function showLinkedInInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
             if (!salesPageUrl) {
-                alert("Por favor, insira uma URL da página de vendas primeiro.");
-                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                document.querySelector("[data-tab=\"linkedin\"]").classList.remove("active");
+                alert('Por favor, insira uma URL da página de vendas primeiro.');
+                document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                document.querySelector('[data-tab="linkedin"]').classList.remove('active');
                 return;
             }
             
             const linkedinMessage = `Olá! Descobri um produto incrível que pode te interessar. Confira: ${salesPageUrl}`;
-            const linkedinLink = `https://www.linkedin.com/messaging/compose/?message=${encodeURIComponent(linkedinMessage )}`;
+            const linkedinLink = `https://www.linkedin.com/messaging/compose/?message=${encodeURIComponent(linkedinMessage)}`;
             
             navigator.clipboard.writeText(linkedinLink);
-            alert("Link do LinkedIn copiado para a área de transferência!");
-            window.open(linkedinLink, "_blank");
+            alert('Link do LinkedIn copiado para a área de transferência!');
+            window.open(linkedinLink, '_blank');
         }
 
         function showTelegramInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
             if (!salesPageUrl) {
-                alert("Por favor, insira uma URL da página de vendas primeiro.");
-                document.querySelector("[data-tab=\"chatbot\"]").classList.add("active");
-                document.querySelector("[data-tab=\"telegram\"]").classList.remove("active");
+                alert('Por favor, insira uma URL da página de vendas primeiro.');
+                document.querySelector('[data-tab="chatbot"]').classList.add('active');
+                document.querySelector('[data-tab="telegram"]').classList.remove('active');
                 return;
             }
             
             const telegramMessage = `Olá! Descobri um produto incrível que pode te interessar. Confira: ${salesPageUrl}`;
-            const telegramLink = `https://t.me/share/url?url=${encodeURIComponent(salesPageUrl )}&text=${encodeURIComponent(telegramMessage)}`;
+            const telegramLink = `https://t.me/share/url?url=${encodeURIComponent(salesPageUrl)}&text=${encodeURIComponent(telegramMessage)}`;
             
             navigator.clipboard.writeText(telegramLink);
-            alert("Link do Telegram copiado para a área de transferência!");
-            window.open(telegramLink, "_blank");
+            alert('Link do Telegram copiado para a área de transferência!');
+            window.open(telegramLink, '_blank');
         }
+
+        function showAnalyticsInterface() {
+            // Mostrar estatísticas básicas
+            const stats = `
+Analytics do LinkMágico Chatbot v2.0:
+
+- Chatbots Criados: ${localStorage.getItem('linkmagico_chatbots_created') || 0}
+- Última Ativação: ${localStorage.getItem('linkmagico_last_activation') || 'Nunca'}
+- URLs Processadas: ${localStorage.getItem('linkmagico_urls_processed') || 0}
+- Versão: 2.0
+
+Funcionalidades avançadas de analytics serão implementadas em breve!
+            `;
+            alert(stats);
+        }
+
+        // Funções auxiliares para gerar links de redes sociais
+        function generateWhatsAppLink(url) {
+            const message = `Olá! Descobri um produto incrível que pode te interessar. Confira: ${url}`;
+            return `https://wa.me/?text=${encodeURIComponent(message)}`;
+        }
+
+        function generateFacebookLink(url) {
+            return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        }
+
+        function generateInstagramLink(url) {
+            // Instagram não tem API direta de compartilhamento, então retornamos uma mensagem
+            return `Compartilhe manualmente no Instagram: ${url}`;
+        }
+
+        // Função para atualizar analytics
+        function updateAnalytics() {
+            const chatbotsCreated = parseInt(localStorage.getItem('linkmagico_chatbots_created') || '0') + 1;
+            const urlsProcessed = parseInt(localStorage.getItem('linkmagico_urls_processed') || '0') + 1;
+            const lastActivation = new Date().toLocaleString('pt-BR');
+            
+            localStorage.setItem('linkmagico_chatbots_created', chatbotsCreated.toString());
+            localStorage.setItem('linkmagico_urls_processed', urlsProcessed.toString());
+            localStorage.setItem('linkmagico_last_activation', lastActivation);
+            
+            Utils.log(`Analytics atualizados: ${chatbotsCreated} chatbots criados, ${urlsProcessed} URLs processadas`);
+        }
+
+        // Salvar configurações no localStorage
+        function saveSettings() {
+            const settings = {
+                robotName: robotNameInput.value,
+                customInstructions: customInstructionsInput.value
+            };
+            localStorage.setItem('linkmagico_chatbot_v2_settings', JSON.stringify(settings));
+        }
+
+        // Carregar configurações do localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('linkmagico_chatbot_v2_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                if (settings.robotName) robotNameInput.value = settings.robotName;
+                if (settings.customInstructions) customInstructionsInput.value = settings.customInstructions;
+            }
+        }
+
+        // Salvar configurações quando os campos mudarem
+        robotNameInput.addEventListener('change', saveSettings);
+        customInstructionsInput.addEventListener('change', saveSettings);
+
+        // Carregar configurações ao inicializar
+        loadSettings();
+
+        Utils.log('LinkMágico Chatbot v2.0 inicializado com sucesso');
+    </script>
+</body>
+</html>
+
+
 
         function showTikTokInterface() {
             const salesPageUrl = salesPageUrlInput.value.trim();
@@ -866,11 +982,10 @@
             }
             
             const tiktokMessage = `Confira este produto incrível: ${salesPageUrl}`;
-            // Tentativa de usar o formato de compartilhamento de URL de vídeo do TikTok. Pode não funcionar para URLs arbitrárias.
-            const tiktokLink = `https://www.tiktok.com/share/video?url=${encodeURIComponent(salesPageUrl )}&text=${encodeURIComponent(tiktokMessage)}`;
+            const tiktokLink = `https://www.tiktok.com/share/video?url=${encodeURIComponent(salesPageUrl)}&text=${encodeURIComponent(tiktokMessage)}`;
             
             navigator.clipboard.writeText(tiktokLink);
-            alert("Link do TikTok copiado para a área de transferência!\n\nImportante: O TikTok é focado em compartilhamento de vídeo. O compartilhamento direto de URLs arbitrárias pode não ser totalmente suportado ou pode exigir integração com o TikTok Shop.");
+            alert("Link do TikTok copiado para a área de transferência!");
             window.open(tiktokLink, "_blank");
         }
 
@@ -884,75 +999,10 @@
             }
             
             const kwaiMessage = `Dê uma olhada neste produto: ${salesPageUrl}`;
-            // Tentativa de usar o formato de compartilhamento de URL de vídeo do Kwai. Pode não funcionar para URLs arbitrárias.
-            const kwaiLink = `https://s.kw.ai/share/video?text=${encodeURIComponent(kwaiMessage )}&url=${encodeURIComponent(salesPageUrl)}`;
+            const kwaiLink = `https://www.kwai.com/share?url=${encodeURIComponent(salesPageUrl)}&text=${encodeURIComponent(kwaiMessage)}`;
             
             navigator.clipboard.writeText(kwaiLink);
-            alert("Link do Kwai copiado para a área de transferência!\n\nImportante: O Kwai é focado em compartilhamento de vídeo. O compartilhamento direto de URLs arbitrárias pode não ser totalmente suportado ou pode exigir um vídeo real.");
+            alert("Link do Kwai copiado para a área de transferência!");
             window.open(kwaiLink, "_blank");
         }
 
-        function showAnalyticsInterface() {
-            // Mostrar estatísticas básicas
-            const stats = `\nAnalytics do LinkMágico Chatbot v2.0:\n\n- Chatbots Criados: ${localStorage.getItem("linkmagico_chatbots_created") || 0}\n- Última Ativação: ${localStorage.getItem("linkmagico_last_activation") || "Nunca"}\n- URLs Processadas: ${localStorage.getItem("linkmagico_urls_processed") || 0}\n- Versão: 2.0\n\nFuncionalidades avançadas de analytics serão implementadas em breve!\n            `;
-            alert(stats);
-        }
-
-        // Funções auxiliares para gerar links de redes sociais
-        function generateWhatsAppLink(url) {
-            const message = `Olá! Descobri um produto incrível que pode te interessar. Confira: ${url}`;
-            return `https://wa.me/?text=${encodeURIComponent(message )}`;
-        }
-
-        function generateFacebookLink(url) {
-            return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url )}`;
-        }
-
-        function generateInstagramLink(url) {
-            // Instagram não tem API direta de compartilhamento, então retornamos uma mensagem
-            return `Compartilhe manualmente no Instagram: ${url}`;
-        }
-
-        // Função para atualizar analytics
-        function updateAnalytics() {
-            const chatbotsCreated = parseInt(localStorage.getItem("linkmagico_chatbots_created") || "0") + 1;
-            const urlsProcessed = parseInt(localStorage.getItem("linkmagico_urls_processed") || "0") + 1;
-            const lastActivation = new Date().toLocaleString("pt-BR");
-            
-            localStorage.setItem("linkmagico_chatbots_created", chatbotsCreated.toString());
-            localStorage.setItem("linkmagico_urls_processed", urlsProcessed.toString());
-            localStorage.setItem("linkmagico_last_activation", lastActivation);
-            
-            Utils.log(`Analytics atualizados: ${chatbotsCreated} chatbots criados, ${urlsProcessed} URLs processadas`);
-        }
-
-        // Salvar configurações no localStorage
-        function saveSettings() {
-            const settings = {
-                robotName: robotNameInput.value,
-                customInstructions: customInstructionsInput.value
-            };
-            localStorage.setItem("linkmagico_chatbot_v2_settings", JSON.stringify(settings));
-        }
-
-        // Carregar configurações do localStorage
-        function loadSettings() {
-            const saved = localStorage.getItem("linkmagico_chatbot_v2_settings");
-            if (saved) {
-                const settings = JSON.parse(saved);
-                if (settings.robotName) robotNameInput.value = settings.robotName;
-                if (settings.customInstructions) customInstructionsInput.value = settings.customInstructions;
-            }
-        }
-
-        // Salvar configurações quando os campos mudarem
-        robotNameInput.addEventListener("change", saveSettings);
-        customInstructionsInput.addEventListener("change", saveSettings);
-
-        // Carregar configurações ao inicializar
-        loadSettings();
-
-        Utils.log("LinkMágico Chatbot v2.0 inicializado com sucesso");
-    </script>
-</body>
-</html>
