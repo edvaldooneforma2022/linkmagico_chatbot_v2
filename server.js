@@ -3,25 +3,25 @@
  * Extração inteligente de dados da página final + Chatbot conversacional
  */
 
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const path = require("path");
-const rateLimit = require("express-rate-limit");
-const winston = require("winston");
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
+const winston = require('winston');
 const puppeteer = require("puppeteer-core");
 const { launch } = require("@puppeteer/browsers");
-const fetch = require("node-fetch");
-const crypto = require("crypto");
-const fs = require("fs");
-require("dotenv").config();
+const fetch = require('node-fetch');
+const crypto = require('crypto');
+const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Logger
 const logger = winston.createLogger({
-  level: "info",
+  level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.json()
@@ -33,7 +33,7 @@ const logger = winston.createLogger({
         winston.format.simple()
       )
     }),
-    new winston.transports.File({ filename: "chatbot.log" })
+    new winston.transports.File({ filename: 'chatbot.log' })
   ],
 });
 
@@ -41,16 +41,16 @@ const logger = winston.createLogger({
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 200, // máximo 200 requests por IP
-  message: { error: "Muitas requisições. Tente novamente em 15 minutos." }
+  message: { error: 'Muitas requisições. Tente novamente em 15 minutos.' }
 });
 
 // Middlewares
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-api-key"]
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
 }));
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: '10mb' }));
 app.use(helmet({
   contentSecurityPolicy: false
 }));
@@ -72,30 +72,30 @@ class AdvancedPageExtractor {
     try {
       log(`Iniciando extração da URL: ${url}`);
       
-      browser = await launch({
-        channel: "chrome", // Use a versão estável do Chrome
+      browser = await puppeteer.launch({
+        executablePath: process.env.CHROME_BIN || null, // Use CHROME_BIN se definido, senão null para autodetectar
         headless: true,
         args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-accelerated-2d-canvas",
-          "--no-first-run",
-          "--no-zygote",
-          "--disable-gpu",
-          "--single-process"
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+          '--single-process'
         ],
       });
 
       const page = await browser.newPage();
       
       // Configurar user agent e viewport
-      await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
       await page.setViewport({ width: 1366, height: 768 });
       
       // Navegar para a URL e aguardar carregamento completo
       await page.goto(url, { 
-        waitUntil: "networkidle2", 
+        waitUntil: 'networkidle2', 
         timeout: 60000 
       });
       
@@ -110,10 +110,10 @@ class AdvancedPageExtractor {
       const pageData = await page.evaluate(() => {
         // Função auxiliar para limpar texto
         const cleanText = (text) => {
-          if (!text) return "";
+          if (!text) return '';
           return text
-            .replace(/\s+/g, " ")
-            .replace(/[^\w\sÀ-ÿ,.!?€$@%()\-"]/g, "")
+            .replace(/\s+/g, ' ')
+            .replace(/[^\w\sÀ-ÿ,.!?€$@%()\-"]/g, '')
             .trim();
         };
         
@@ -121,12 +121,12 @@ class AdvancedPageExtractor {
         const extractTitle = () => {
           // Tentar diferentes seletores para título
           const selectors = [
-            "h1",
-            ".product-title",
-            ".title",
-            "[data-testid=\"product-title\"]",
-            ".product-name",
-            "title"
+            'h1',
+            '.product-title',
+            '.title',
+            '[data-testid="product-title"]',
+            '.product-name',
+            'title'
           ];
           
           for (const selector of selectors) {
@@ -137,21 +137,21 @@ class AdvancedPageExtractor {
           }
           
           // Fallback: primeiro h1 ou título da página
-          const h1 = document.querySelector("h1");
+          const h1 = document.querySelector('h1');
           if (h1) return cleanText(h1.textContent);
           
-          return cleanText(document.title) || "Produto Incrível";
+          return cleanText(document.title) || 'Produto Incrível';
         };
         
         // Extrair preço
         const extractPrice = () => {
           const priceSelectors = [
-            ".price",
-            ".product-price",
-            "[data-testid=\"price\"]",
-            ".value",
-            ".amount",
-            ".cost"
+            '.price',
+            '.product-price',
+            '[data-testid="price"]',
+            '.value',
+            '.amount',
+            '.cost'
           ];
           
           for (const selector of priceSelectors) {
@@ -166,25 +166,25 @@ class AdvancedPageExtractor {
           // Buscar padrão de preço em todo o texto
           const bodyText = document.body.textContent;
           const priceMatch = bodyText.match(/R\$\s*[\d.,]+/);
-          return priceMatch ? priceMatch[0] : "Consulte o preço";
+          return priceMatch ? priceMatch[0] : 'Consulte o preço';
         };
         
         // Extrair descrição
         const extractDescription = () => {
           const descSelectors = [
-            ".description",
-            ".product-description",
-            "[data-testid=\"description\"]",
-            ".summary",
-            ".about",
-            "meta[name=\"description\"]"
+            '.description',
+            '.product-description',
+            '[data-testid="description"]',
+            '.summary',
+            '.about',
+            'meta[name="description"]'
           ];
           
           for (const selector of descSelectors) {
             const element = document.querySelector(selector);
             if (element) {
-              const text = selector.includes("meta") ? 
-                element.getAttribute("content") : 
+              const text = selector.includes('meta') ? 
+                element.getAttribute('content') : 
                 element.textContent;
               if (text && text.length > 50) {
                 return cleanText(text);
@@ -193,9 +193,9 @@ class AdvancedPageExtractor {
           }
           
           // Fallback: buscar parágrafos longos
-          const paragraphs = Array.from(document.querySelectorAll("p"));
+          const paragraphs = Array.from(document.querySelectorAll('p'));
           const longParagraph = paragraphs.find(p => p.textContent.length > 100);
-          return longParagraph ? cleanText(longParagraph.textContent) : "Descrição não encontrada";
+          return longParagraph ? cleanText(longParagraph.textContent) : 'Descrição não encontrada';
         };
         
         // Extrair benefícios
@@ -203,9 +203,9 @@ class AdvancedPageExtractor {
           const benefits = [];
           
           // Buscar listas
-          const lists = document.querySelectorAll("ul, ol");
+          const lists = document.querySelectorAll('ul, ol');
           lists.forEach(list => {
-            const items = list.querySelectorAll("li");
+            const items = list.querySelectorAll('li');
             items.forEach(item => {
               const text = cleanText(item.textContent);
               if (text.length > 10 && text.length < 200) {
@@ -216,10 +216,10 @@ class AdvancedPageExtractor {
           
           // Buscar elementos com classes relacionadas a benefícios
           const benefitSelectors = [
-            ".benefit",
-            ".feature",
-            ".advantage",
-            ".highlight"
+            '.benefit',
+            '.feature',
+            '.advantage',
+            '.highlight'
           ];
           
           benefitSelectors.forEach(selector => {
@@ -232,7 +232,7 @@ class AdvancedPageExtractor {
             });
           });
           
-          return benefits.length > 0 ? benefits.slice(0, 10) : ["Benefícios incríveis", "Resultados garantidos"];
+          return benefits.length > 0 ? benefits.slice(0, 10) : ['Benefícios incríveis', 'Resultados garantidos'];
         };
         
         // Extrair depoimentos
@@ -241,11 +241,11 @@ class AdvancedPageExtractor {
           
           // Buscar elementos com classes relacionadas a depoimentos
           const testimonialSelectors = [
-            ".testimonial",
-            ".review",
-            ".feedback",
-            ".comment",
-            ".depoimento"
+            '.testimonial',
+            '.review',
+            '.feedback',
+            '.comment',
+            '.depoimento'
           ];
           
           testimonialSelectors.forEach(selector => {
@@ -263,25 +263,25 @@ class AdvancedPageExtractor {
           const quoteMatches = bodyText.match(/[""]([^""]{30,300})[""]/g);
           if (quoteMatches) {
             quoteMatches.forEach(match => {
-              const text = match.replace(/[""]/g, "").trim();
+              const text = match.replace(/[""]/g, '').trim();
               if (text.length > 30) {
                 testimonials.push(cleanText(text));
               }
             });
           }
           
-          return testimonials.length > 0 ? testimonials.slice(0, 5) : ["Produto excelente! Recomendo!"];
+          return testimonials.length > 0 ? testimonials.slice(0, 5) : ['Produto excelente! Recomendo!'];
         };
         
         // Extrair CTA
         const extractCTA = () => {
           const ctaSelectors = [
-            ".cta",
-            ".buy-button",
-            ".purchase",
-            ".add-to-cart",
-            "button[type=\"submit\"]",
-            ".btn-primary"
+            '.cta',
+            '.buy-button',
+            '.purchase',
+            '.add-to-cart',
+            'button[type="submit"]',
+            '.btn-primary'
           ];
           
           for (const selector of ctaSelectors) {
@@ -294,7 +294,7 @@ class AdvancedPageExtractor {
             }
           }
           
-          return "Garanta já o seu!";
+          return 'Garanta já o seu!';
         };
         
         return {
@@ -348,29 +348,29 @@ class IntelligentChatbot {
     const message = userMessage.toLowerCase();
     
     // Respostas baseadas em palavras-chave
-    if (message.includes("preço") || message.includes("valor") || message.includes("custa")) {
+    if (message.includes('preço') || message.includes('valor') || message.includes('custa')) {
       return `O preço do ${this.productData.title} é ${this.productData.price}. ${this.productData.cta}`;
     }
     
-    if (message.includes("benefício") || message.includes("vantagem") || message.includes("serve")) {
-      const benefits = this.productData.benefits.slice(0, 3).join(", ");
+    if (message.includes('benefício') || message.includes('vantagem') || message.includes('serve')) {
+      const benefits = this.productData.benefits.slice(0, 3).join(', ');
       return `Os principais benefícios são: ${benefits}. Quer saber mais alguma coisa?`;
     }
     
-    if (message.includes("depoimento") || message.includes("avaliação") || message.includes("opinião")) {
+    if (message.includes('depoimento') || message.includes('avaliação') || message.includes('opinião')) {
       const testimonial = this.productData.testimonials[0];
       return `Aqui está um depoimento real: "${testimonial}". Muitos clientes têm resultados similares!`;
     }
     
-    if (message.includes("comprar") || message.includes("adquirir") || message.includes("quero")) {
+    if (message.includes('comprar') || message.includes('adquirir') || message.includes('quero')) {
       return `Ótima escolha! ${this.productData.cta} Acesse o link da página de vendas para finalizar sua compra.`;
     }
     
-    if (message.includes("dúvida") || message.includes("ajuda") || message.includes("suporte")) {
+    if (message.includes('dúvida') || message.includes('ajuda') || message.includes('suporte')) {
       return `Estou aqui para ajudar! Posso falar sobre preços, benefícios, depoimentos ou qualquer dúvida sobre o ${this.productData.title}.`;
     }
     
-    if (message.includes("olá") || message.includes("oi") || message.includes("bom dia") || message.includes("boa tarde")) {
+    if (message.includes('olá') || message.includes('oi') || message.includes('bom dia') || message.includes('boa tarde')) {
       return `Olá! Seja bem-vindo! Sou o assistente virtual do ${this.productData.title}. Como posso ajudá-lo hoje?`;
     }
     
@@ -382,27 +382,27 @@ class IntelligentChatbot {
 // Rotas da API
 
 // Página inicial
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Status da API
-app.get("/api/status", (req, res) => {
+app.get('/api/status', (req, res) => {
   res.json({
-    status: "online",
-    version: "2.0",
+    status: 'online',
+    version: '2.0',
     timestamp: new Date().toISOString(),
     cache_size: productCache.size
   });
 });
 
 // Extrair dados de uma URL
-app.post("/api/extract", async (req, res) => {
+app.post('/api/extract', async (req, res) => {
   try {
     const { url } = req.body;
     
     if (!url) {
-      return res.status(400).json({ error: "URL é obrigatória" });
+      return res.status(400).json({ error: 'URL é obrigatória' });
     }
     
     // Verificar cache
@@ -428,17 +428,17 @@ app.post("/api/extract", async (req, res) => {
     
   } catch (error) {
     logger.error(`Erro na extração: ${error.message}`);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
 // Chat com o bot
-app.post("/api/chat", async (req, res) => {
+app.post('/api/chat', async (req, res) => {
   try {
     const { message, productUrl } = req.body;
     
     if (!message || !productUrl) {
-      return res.status(400).json({ error: "Mensagem e URL do produto são obrigatórias" });
+      return res.status(400).json({ error: 'Mensagem e URL do produto são obrigatórias' });
     }
     
     // Obter dados do produto (cache ou extrair)
@@ -463,17 +463,17 @@ app.post("/api/chat", async (req, res) => {
     
   } catch (error) {
     logger.error(`Erro no chat: ${error.message}`);
-    res.status(500).json({ error: "Erro ao processar mensagem" });
+    res.status(500).json({ error: 'Erro ao processar mensagem' });
   }
 });
 
 // Interface do chatbot para clientes
-app.get("/chat", async (req, res) => {
+app.get('/chat', async (req, res) => {
   try {
     const { robot, url, instructions } = req.query;
     
     if (!url) {
-      return res.status(400).send("URL do produto é obrigatória");
+      return res.status(400).send('URL do produto é obrigatória');
     }
     
     // Extrair dados do produto
@@ -486,14 +486,14 @@ app.get("/chat", async (req, res) => {
       setTimeout(() => productCache.delete(url), CACHE_DURATION);
     }
     
-    const robotName = robot || "@AssistenteVirtual";
-    const customInstructions = instructions || "";
+    const robotName = robot || '@AssistenteVirtual';
+    const customInstructions = instructions || '';
     
     res.send(generateChatInterface(productData, robotName, customInstructions));
     
   } catch (error) {
     logger.error(`Erro ao gerar interface do chat: ${error.message}`);
-    res.status(500).send("Erro interno do servidor");
+    res.status(500).send('Erro interno do servidor');
   }
 });
 
@@ -652,28 +652,28 @@ function generateChatInterface(productData, robotName, customInstructions) {
     </div>
 
     <script>
-        const chatMessages = document.getElementById("chatMessages");
-        const chatInput = document.getElementById("chatInput");
-        const chatSendBtn = document.getElementById("chatSendBtn");
-        const typingIndicator = document.getElementById("typingIndicator");
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
         
-        const productUrl = "${productData.finalUrl || productData.url}";
+        const productUrl = '${productData.finalUrl || productData.url}';
         
         function addMessage(content, isUser = false) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = "message " + (isUser ? "user" : "bot");
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + (isUser ? 'user' : 'bot');
             messageDiv.textContent = content;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
         function showTyping() {
-            typingIndicator.style.display = "block";
+            typingIndicator.style.display = 'block';
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
         function hideTyping() {
-            typingIndicator.style.display = "none";
+            typingIndicator.style.display = 'none';
         }
         
         async function sendMessage() {
@@ -681,16 +681,16 @@ function generateChatInterface(productData, robotName, customInstructions) {
             if (!message) return;
             
             addMessage(message, true);
-            chatInput.value = "";
+            chatInput.value = '';
             chatSendBtn.disabled = true;
             
             showTyping();
             
             try {
-                const response = await fetch("/api/chat", {
-                    method: "POST",
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         message: message,
@@ -709,15 +709,15 @@ function generateChatInterface(productData, robotName, customInstructions) {
                 
             } catch (error) {
                 hideTyping();
-                addMessage("Desculpe, ocorreu um erro. Tente novamente.");
+                addMessage('Desculpe, ocorreu um erro. Tente novamente.');
                 chatSendBtn.disabled = false;
                 chatInput.focus();
             }
         }
         
-        chatSendBtn.addEventListener("click", sendMessage);
-        chatInput.addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
                 sendMessage();
             }
         });
@@ -730,10 +730,10 @@ function generateChatInterface(productData, robotName, customInstructions) {
 }
 
 // Inicializar servidor
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, '0.0.0.0', () => {
   logger.info(`🚀 LinkMágico Chatbot v2.0 iniciado na porta ${PORT}`);
-  logger.info(`🔗 Acesse: http://localhost:${PORT}` );
-  logger.info(`💬 Chat: http://localhost:${PORT}/chat?url=SUA_URL&robot=@SeuBot` );
+  logger.info(`🔗 Acesse: http://localhost:${PORT}`);
+  logger.info(`💬 Chat: http://localhost:${PORT}/chat?url=SUA_URL&robot=@SeuBot`);
 });
 
 module.exports = app;
