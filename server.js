@@ -1,8 +1,3 @@
-/**
- * LinkMágico Chatbot v3.0 - Servidor Backend
- * Extração de dados profissional via API de Web Scraping (Browserless.io)
- */
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
