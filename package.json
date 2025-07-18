@@ -1,27 +1,18 @@
 {
-  "name": "linkmagico-chatbot-v2-final",
-  "version": "2.2.0",
-  "description": "Chatbot conversacional com extração de dados robusta via Puppeteer.",
+  "name": "linkmagico-chatbot-v3-professional",
+  "version": "3.0.0",
+  "description": "Chatbot com extração de dados via API de Web Scraping profissional.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [
-    "chatbot",
-    "puppeteer",
-    "nodejs"
-  ],
   "author": "Seu Nome",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
-    "helmet": "^6.0.1",
     "node-fetch": "^2.6.7",
-    "puppeteer": "^19.7.5",
-    "winston": "^3.8.2"
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.3"
   }
 }

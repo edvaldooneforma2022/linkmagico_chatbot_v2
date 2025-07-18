@@ -1,146 +1,82 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 LinkMágico Chatbot v2.2 - Versão Final</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { padding: 30px; text-align: center; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .form-container { padding: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input[type="url"] { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 10px; }
-        .generate-btn { width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-size: 18px; cursor: pointer; }
-        .generate-btn:disabled { background: #ccc; }
-        .chat-container { margin-top: 20px; border: 1px solid #ddd; border-radius: 10px; height: 300px; overflow-y: auto; padding: 10px; }
-        .chat-input-container { display: flex; margin-top: 10px; }
-        .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; }
-        .chat-send-btn { padding: 10px 15px; border-radius: 20px; border: none; background: #1877f2; color: white; margin-left: 10px; }
-        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
-        .message.user { background: #e0e0e0; margin-left: auto; }
-        .message.bot { background: #1877f2; color: white; margin-right: auto; }
-        .footer-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; background: #f0f2f5; justify-content: center; }
-        .shortcut-btn { padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: white; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 LinkMágico Chatbot v2.2</h1>
-            <p>A Solução Definitiva para Vendas Online</p>
-        </div>
-        <div class="form-container">
-            <div class="form-group">
-                <label for="salesPageUrl">🔗 URL da Página de Vendas Final:</label>
-                <input type="url" id="salesPageUrl" placeholder="https://... (cole aqui a URL final do produto )">
-            </div>
-            <button class="generate-btn" id="activateBtn">Ativar Chatbot e Funções</button>
-            <div class="chat-container" id="chatContainer"></div>
-            <div class="chat-input-container">
-                <input type="text" class="chat-input" id="chatInput" placeholder="Faça uma pergunta...">
-                <button class="chat-send-btn" id="chatSendBtn">Enviar</button>
-            </div>
-            <div class="footer-shortcuts">
-                <button class="shortcut-btn" data-tab="tiktok">🎵 TikTok</button>
-                <button class="shortcut-btn" data-tab="kwai">🎥 Kwai</button>
-            </div>
-        </div>
-    </div>
+/**
+ * LinkMágico Chatbot v3.0 - Servidor Backend
+ * Extração de dados profissional via API de Web Scraping (Browserless.io)
+ */
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const activateBtn = document.getElementById('activateBtn');
-            const salesPageUrlInput = document.getElementById('salesPageUrl');
-            const chatContainer = document.getElementById('chatContainer');
-            const chatInput = document.getElementById('chatInput');
-            const chatSendBtn = document.getElementById('chatSendBtn');
-            
-            let extractedDataCache = null;
+const app = express();
+const PORT = process.env.PORT || 3000;
+const BROWSERLESS_API_KEY = process.env.BROWSERLESS_API_KEY;
 
-            const addMessageToChat = (content, sender) => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}`;
-                messageDiv.textContent = content;
-                chatContainer.appendChild(messageDiv);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            };
+app.use(cors());
+app.use(express.json());
+app.use(express.static(__dirname));
 
-            activateBtn.addEventListener('click', async () => {
-                const url = salesPageUrlInput.value.trim();
-                if (!url) {
-                    alert('Por favor, insira a URL da página de vendas.');
-                    return;
-                }
-                
-                activateBtn.disabled = true;
-                activateBtn.textContent = 'Extraindo dados...';
-                addMessageToChat('Iniciando extração de dados da página. Isso pode levar até 30 segundos. Aguarde...', 'bot');
+if (!BROWSERLESS_API_KEY) {
+    console.error("FATAL ERROR: BROWSERLESS_API_KEY não está definida no .env");
+    process.exit(1);
+}
 
-                try {
-                    const response = await fetch('/api/extract', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ url })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.error) throw new Error(data.error);
+async function extractDataWithApi(targetUrl) {
+    console.log(`[API Extractor] Iniciando extração para: ${targetUrl}`);
+    const apiEndpoint = `https://chrome.browserless.io/content?token=${BROWSERLESS_API_KEY}`;
 
-                    extractedDataCache = data;
-                    addMessageToChat(`Pronto! Extraí os dados do produto "${data.title}". Pode perguntar!`, 'bot');
-                } catch (error) {
-                    addMessageToChat(`Erro na extração: ${error.message}`, 'bot');
-                } finally {
-                    activateBtn.disabled = false;
-                    activateBtn.textContent = 'Ativar Chatbot e Funções';
-                }
-            });
-
-            const handleSendMessage = async () => {
-                const message = chatInput.value.trim();
-                if (!message) return;
-                if (!extractedDataCache) {
-                    alert('Por favor, ative o chatbot primeiro com uma URL válida.');
-                    return;
-                }
-
-                addMessageToChat(message, 'user');
-                chatInput.value = '';
-
-                try {
-                    const response = await fetch('/api/chat', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message, productUrl: salesPageUrlInput.value.trim() })
-                    });
-                    const data = await response.json();
-                    addMessageToChat(data.response, 'bot');
-                } catch (error) {
-                    addMessageToChat('Desculpe, ocorreu um erro no servidor.', 'bot');
-                }
-            };
-
-            chatSendBtn.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', (e) => e.key === 'Enter' && handleSendMessage());
-
-            document.querySelectorAll('.shortcut-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const platform = btn.dataset.tab;
-                    const url = salesPageUrlInput.value.trim();
-                    if (!url) {
-                        alert('Insira a URL da página de vendas primeiro.');
-                        return;
-                    }
-                    const message = `Confira este produto incrível que encontrei: ${url}`;
-                    navigator.clipboard.writeText(message).then(() => {
-                        alert(`Texto para ${platform.toUpperCase()} copiado! Agora é só colar no app.`);
-                    });
-                });
-            });
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: targetUrl,
+                waitFor: 2500, // Espera 2.5 segundos para a página carregar completamente
+            } ),
         });
-    </script>
-</body>
-</html>
+
+        if (!response.ok) {
+            throw new Error(`A API de scraping falhou com status: ${response.status}`);
+        }
+
+        const html = await response.text();
+        const $ = cheerio.load(html);
+
+        const title = $('title').first().text().trim() || $('h1').first().text().trim();
+        const priceMatch = $.text().match(/R\$\s?(\d{1,3}(\.\d{3})*,\d{2})/);
+        const price = priceMatch ? priceMatch[0] : 'Consulte o preço na página';
+
+        console.log(`[API Extractor] Extração concluída para: ${title}`);
+        return { title, price };
+
+    } catch (error) {
+        console.error(`[API Extractor] Erro: ${error.message}`);
+        return { error: true, message: error.message };
+    }
+}
+
+app.post('/api/extract', async (req, res) => {
+    const { url } = req.body;
+    if (!url) return res.status(400).json({ error: "URL é obrigatória" });
+
+    const data = await extractDataWithApi(url);
+    if (data.error) {
+        return res.status(500).json({ error: `Falha ao extrair dados: ${data.message}` });
+    }
+    res.json(data);
+});
+
+app.post('/api/chat', (req, res) => {
+    const { message, productData } = req.body;
+    if (!message || !productData) return res.status(400).json({ error: "Dados insuficientes" });
+
+    let response = `Sobre o produto "${productData.title}", não encontrei essa informação.`;
+    if (message.toLowerCase().includes('preço') || message.toLowerCase().includes('valor')) {
+        response = `O preço do produto "${productData.title}" é ${productData.price}.`;
+    }
+    res.json({ response });
+});
+
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor v3.0 (API Profissional) iniciado na porta ${PORT}`);
+});
