@@ -10,3 +10,5 @@
 {"level":"info","message":"🚀 LinkMágico Chatbot v2.0 iniciado na porta 3000","timestamp":"2025-07-14T16:32:26.257Z"}
 {"level":"info","message":"🔗 Acesse: http://localhost:3000","timestamp":"2025-07-14T16:32:26.259Z"}
 {"level":"info","message":"💬 Chat: http://localhost:3000/chat?url=SUA_URL&robot=@SeuBot","timestamp":"2025-07-14T16:32:26.260Z"}
+{"level":"info","message":"🚀 LinkMágico Chatbot v2.1 (Cheerio Edition) iniciado na porta 3000","timestamp":"2025-07-17T17:06:09.575Z"}
+{"level":"info","message":"🔗 Acesse o painel em: http://localhost:3000","timestamp":"2025-07-17T17:06:09.578Z"}

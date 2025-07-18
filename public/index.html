@@ -3,143 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 LinkMágico Chatbot v2.0 - IA Conversacional para Vendas</title>
+    <title>🚀 LinkMágico Chatbot v2.2 - Versão Final</title>
     <style>
-        /* --- Estilos CSS (Mantidos do seu design original para consistência) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-        .header h1 { font-size: 28px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .header p { font-size: 16px; opacity: 0.9; }
+        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { padding: 30px; text-align: center; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .form-container { padding: 30px; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-        .form-group input[type="text"], .form-group input[type="url"], .form-group textarea { width: 100%; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; transition: border-color 0.3s; font-family: inherit; }
-        .form-group textarea { min-height: 100px; resize: vertical; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
-        .form-group input.error { border-color: #dc3545; }
-        .error-message { color: #dc3545; font-size: 12px; margin-top: 5px; display: none; }
-        .new-feature { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-        .new-feature h3 { margin-bottom: 5px; font-size: 18px; }
-        .new-feature p { font-size: 14px; opacity: 0.9; }
-        .generate-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s; margin-bottom: 20px; }
-        .generate-btn:hover { transform: translateY(-2px); }
-        .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .result-container { display: none; background: #f8f9fa; border-radius: 12px; padding: 20px; margin-top: 20px; }
-        .result-container.show { display: block; }
-        .result-title { font-weight: 600; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .result-link { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 12px; word-break: break-all; font-family: monospace; font-size: 14px; margin-bottom: 15px; }
-        .copy-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; }
-        .copy-btn:hover { background: #218838; }
-        .footer-shortcuts { display: flex; gap: 8px; margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 12px; flex-wrap: wrap; justify-content: center; }
-        .shortcut-btn { flex: 1; min-width: 100px; padding: 10px 12px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 500; font-size: 12px; transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .shortcut-btn:hover { background: #667eea; color: white; transform: translateY(-1px); }
-        .shortcut-btn.active { background: #667eea; color: white; }
-        .chat-container { display: none; background: white; border-radius: 12px; margin-top: 20px; height: 400px; border: 2px solid #e9ecef; flex-direction: column; }
-        .chat-container.show { display: flex; }
-        .chat-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px 10px 0 0; text-align: center; font-weight: 600; }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f8f9fa; }
-        .chat-input-container { padding: 15px; border-top: 1px solid #e9ecef; display: flex; gap: 10px; }
-        .chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        .chat-send-btn { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer; }
-        .message { margin-bottom: 15px; padding: 10px 15px; border-radius: 15px; max-width: 80%; word-wrap: break-word; }
-        .message.user { background: #667eea; color: white; margin-left: auto; text-align: right; }
-        .message.bot { background: white; border: 1px solid #ddd; margin-right: auto; }
-        @media (max-width: 768px) { .container { margin: 10px; border-radius: 15px; } .header { padding: 20px; } .header h1 { font-size: 24px; } .form-container { padding: 20px; } .footer-shortcuts { flex-direction: column; } .shortcut-btn { min-width: auto; } }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input[type="url"] { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 10px; }
+        .generate-btn { width: 100%; padding: 16px; background: #1877f2; color: white; border: none; border-radius: 12px; font-size: 18px; cursor: pointer; }
+        .generate-btn:disabled { background: #ccc; }
+        .chat-container { margin-top: 20px; border: 1px solid #ddd; border-radius: 10px; height: 300px; overflow-y: auto; padding: 10px; }
+        .chat-input-container { display: flex; margin-top: 10px; }
+        .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; }
+        .chat-send-btn { padding: 10px 15px; border-radius: 20px; border: none; background: #1877f2; color: white; margin-left: 10px; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
+        .message.user { background: #e0e0e0; margin-left: auto; }
+        .message.bot { background: #1877f2; color: white; margin-right: auto; }
+        .footer-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; background: #f0f2f5; justify-content: center; }
+        .shortcut-btn { padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: white; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 LinkMágico Chatbot v2.1</h1>
-            <p>IA Conversacional Inteligente para Vendas Online</p>
+            <h1>🤖 LinkMágico Chatbot v2.2</h1>
+            <p>A Solução Definitiva para Vendas Online</p>
         </div>
-        
         <div class="form-container">
-            <div class="new-feature">
-                <h3>🚀 VERSÃO PROFISSIONAL: Extração Robusta!</h3>
-                <p>A extração de dados agora usa Cheerio para máxima compatibilidade e precisão.</p>
+            <div class="form-group">
+                <label for="salesPageUrl">🔗 URL da Página de Vendas Final:</label>
+                <input type="url" id="salesPageUrl" placeholder="https://... (cole aqui a URL final do produto )">
             </div>
-            
-            <form id="chatbotForm">
-                <div class="form-group">
-                    <label for="robotName">🤖 Nome do Assistente Virtual:</label>
-                    <input type="text" id="robotName" placeholder="@VendedorPro" required>
-                    <div class="error-message" id="robotNameError">O nome deve começar com @</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="salesPageUrl">🔗 URL da Página de Vendas:</label>
-                    <input type="url" id="salesPageUrl" placeholder="https://exemplo.com/meu-produto" required>
-                    <div class="error-message" id="salesPageUrlError">Por favor, insira uma URL válida</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="customInstructions">📝 Instruções Personalizadas (opcional ):</label>
-                    <textarea id="customInstructions" placeholder="Ex: Responda de forma animada e motivadora."></textarea>
-                </div>
-                
-                <button type="submit" class="generate-btn" id="generateBtn">
-                    🚀 Ativar Chatbot Inteligente
-                </button>
-            </form>
-            
-            <div class="result-container" id="resultContainer">
-                <div class="result-title">🎉 Seu Chatbot foi ativado!</div>
-                <div class="result-link" id="resultLink"></div>
-                <button class="copy-btn" id="copyBtn">📋 Copiar Link do Chat</button>
+            <button class="generate-btn" id="activateBtn">Ativar Chatbot e Funções</button>
+            <div class="chat-container" id="chatContainer"></div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Faça uma pergunta...">
+                <button class="chat-send-btn" id="chatSendBtn">Enviar</button>
             </div>
-            
-            <div class="chat-container" id="chatContainer">
-                <div class="chat-header">💬 Teste seu Chatbot Aqui</div>
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-container">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem...">
-                    <button class="chat-send-btn" id="chatSendBtn">Enviar</button>
-                </div>
-            </div>
-            
             <div class="footer-shortcuts">
-                <button class="shortcut-btn active" data-tab="chatbot">🤖 Chatbot</button>
-                <button class="shortcut-btn" data-tab="extractor">📊 Extrator</button>
-                <button class="shortcut-btn" data-tab="prompt">💭 Prompt</button>
-                <button class="shortcut-btn" data-tab="social">📱 Redes Sociais</button>
                 <button class="shortcut-btn" data-tab="tiktok">🎵 TikTok</button>
                 <button class="shortcut-btn" data-tab="kwai">🎥 Kwai</button>
-                <button class="shortcut-btn" data-tab="linkedin">💼 LinkedIn</button>
-                <button class="shortcut-btn" data-tab="telegram">📱 Telegram</button>
-                <button class="shortcut-btn" data-tab="analytics">📈 Analytics</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- LÓGICA DO FRONTEND (Tudo em um só lugar para organização) ---
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- Seletores de Elementos DOM ---
-            const form = document.getElementById('chatbotForm');
-            const robotNameInput = document.getElementById('robotName');
+            const activateBtn = document.getElementById('activateBtn');
             const salesPageUrlInput = document.getElementById('salesPageUrl');
-            const generateBtn = document.getElementById('generateBtn');
             const chatContainer = document.getElementById('chatContainer');
-            const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
             const chatSendBtn = document.getElementById('chatSendBtn');
             
-            let extractedDataCache = null; // Cache para os dados extraídos
+            let extractedDataCache = null;
 
-            // --- Função Principal de Extração ---
-            async function fetchAndExtractData() {
+            const addMessageToChat = (content, sender) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                messageDiv.textContent = content;
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            };
+
+            activateBtn.addEventListener('click', async () => {
                 const url = salesPageUrlInput.value.trim();
-                if (!validateUrl(url)) {
-                    alert('Por favor, insira uma URL válida da página de vendas.');
-                    return null;
+                if (!url) {
+                    alert('Por favor, insira a URL da página de vendas.');
+                    return;
                 }
-
-                generateBtn.disabled = true;
-                generateBtn.textContent = '⏳ Extraindo dados...';
+                
+                activateBtn.disabled = true;
+                activateBtn.textContent = 'Extraindo dados...';
+                addMessageToChat('Iniciando extração de dados da página. Isso pode levar até 30 segundos. Aguarde...', 'bot');
 
                 try {
                     const response = await fetch('/api/extract', {
@@ -147,49 +85,30 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ url })
                     });
-
-                    if (!response.ok) {
-                        const errorResult = await response.json();
-                        throw new Error(errorResult.error || 'Erro desconhecido no servidor.');
-                    }
-
+                    
                     const data = await response.json();
-                    extractedDataCache = data; // Salva os dados no cache
-                    alert('Dados extraídos com sucesso! O painel está pronto.');
-                    return data;
+                    if (data.error) throw new Error(data.error);
 
+                    extractedDataCache = data;
+                    addMessageToChat(`Pronto! Extraí os dados do produto "${data.title}". Pode perguntar!`, 'bot');
                 } catch (error) {
-                    alert(`Falha na extração: ${error.message}`);
-                    return null;
+                    addMessageToChat(`Erro na extração: ${error.message}`, 'bot');
                 } finally {
-                    generateBtn.disabled = false;
-                    generateBtn.textContent = '🚀 Ativar Chatbot Inteligente';
-                }
-            }
-
-            // --- Evento do Formulário Principal ---
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const data = await fetchAndExtractData();
-                if (data) {
-                    chatContainer.classList.add('show');
-                    chatMessages.innerHTML = `<div class="message bot">Olá! Sou o ${robotNameInput.value || '@Assistente'}. Extraí os dados do produto e estou pronto para ajudar. Pode perguntar!</div>`;
-                    chatContainer.scrollIntoView({ behavior: 'smooth' });
+                    activateBtn.disabled = false;
+                    activateBtn.textContent = 'Ativar Chatbot e Funções';
                 }
             });
 
-            // --- Lógica do Chat ---
-            async function handleSendMessage() {
+            const handleSendMessage = async () => {
                 const message = chatInput.value.trim();
                 if (!message) return;
                 if (!extractedDataCache) {
-                    alert('Por favor, extraia os dados de uma página de vendas primeiro clicando no botão "Ativar Chatbot".');
+                    alert('Por favor, ative o chatbot primeiro com uma URL válida.');
                     return;
                 }
 
-                addMessageToChat(message, true);
+                addMessageToChat(message, 'user');
                 chatInput.value = '';
-                chatSendBtn.disabled = true;
 
                 try {
                     const response = await fetch('/api/chat', {
@@ -197,120 +116,30 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message, productUrl: salesPageUrlInput.value.trim() })
                     });
-                    const result = await response.json();
-                    addMessageToChat(result.response, false);
+                    const data = await response.json();
+                    addMessageToChat(data.response, 'bot');
                 } catch (error) {
-                    addMessageToChat('Desculpe, ocorreu um erro de comunicação com o servidor.', false);
-                } finally {
-                    chatSendBtn.disabled = false;
-                    chatInput.focus();
+                    addMessageToChat('Desculpe, ocorreu um erro no servidor.', 'bot');
                 }
-            }
+            };
 
             chatSendBtn.addEventListener('click', handleSendMessage);
             chatInput.addEventListener('keypress', (e) => e.key === 'Enter' && handleSendMessage());
 
-            function addMessageToChat(content, isUser) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-                messageDiv.textContent = content;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            // --- Lógica dos Botões do Rodapé ---
             document.querySelectorAll('.shortcut-btn').forEach(btn => {
-                btn.addEventListener('click', async function() {
-                    const tab = this.dataset.tab;
-                    
-                    // Ativa o botão visualmente
-                    document.querySelectorAll('.shortcut-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // A maioria das funções precisa dos dados extraídos
-                    if (tab !== 'chatbot' && !extractedDataCache) {
-                        alert('Extraindo dados da página primeiro...');
-                        const data = await fetchAndExtractData();
-                        if (!data) { // Se a extração falhar, para a execução
-                            document.querySelector('[data-tab="chatbot"]').classList.add('active');
-                            this.classList.remove('active');
-                            return;
-                        }
+                btn.addEventListener('click', () => {
+                    const platform = btn.dataset.tab;
+                    const url = salesPageUrlInput.value.trim();
+                    if (!url) {
+                        alert('Insira a URL da página de vendas primeiro.');
+                        return;
                     }
-                    
-                    // Executa a ação correspondente
-                    switch(tab) {
-                        case 'chatbot':
-                            chatContainer.classList.add('show');
-                            chatContainer.scrollIntoView({ behavior: 'smooth' });
-                            break;
-                        case 'extractor':
-                            showExtractorInterface();
-                            break;
-                        case 'prompt':
-                            showPromptInterface();
-                            break;
-                        case 'tiktok':
-                        case 'kwai':
-                        case 'linkedin':
-                        case 'telegram':
-                        case 'social':
-                            handleSocialShare(tab);
-                            break;
-                        case 'analytics':
-                            alert('Funcionalidade de Analytics em desenvolvimento.');
-                            break;
-                    }
+                    const message = `Confira este produto incrível que encontrei: ${url}`;
+                    navigator.clipboard.writeText(message).then(() => {
+                        alert(`Texto para ${platform.toUpperCase()} copiado! Agora é só colar no app.`);
+                    });
                 });
             });
-
-            function showExtractorInterface() {
-                const dataText = `
-                    Título: ${extractedDataCache.title}\n
-                    Preço: ${extractedDataCache.price}\n
-                    Descrição: ${extractedDataCache.description.substring(0, 100)}...\n
-                    Benefícios: ${extractedDataCache.benefits.join(', ')}
-                `;
-                alert("Dados Extraídos:\n" + dataText);
-            }
-
-            function showPromptInterface() {
-                const prompt = `Crie uma copy de vendas para o produto "${extractedDataCache.title}", que custa "${extractedDataCache.price}". Destaque os benefícios: ${extractedDataCache.benefits.join(', ')}.`;
-                copyToClipboard(prompt, "Prompt de Vendas");
-            }
-
-            function handleSocialShare(platform) {
-                const url = salesPageUrlInput.value.trim();
-                const title = extractedDataCache.title;
-                let message = `Confira este produto incrível: ${title}! Saiba mais em: ${url}`;
-                
-                if (platform === 'linkedin') {
-                    window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url )}&title=${encodeURIComponent(title)}`, '_blank');
-                } else if (platform === 'telegram') {
-                    window.open(`https://t.me/share/url?url=${encodeURIComponent(url )}&text=${encodeURIComponent(message)}`, '_blank');
-                } else {
-                    // Para TikTok, Kwai e o botão geral "Redes Sociais"
-                    copyToClipboard(message, platform.charAt(0).toUpperCase() + platform.slice(1));
-                }
-            }
-
-            // --- Funções Utilitárias ---
-            function validateUrl(url) {
-                try {
-                    new URL(url);
-                    return url.startsWith('http' );
-                } catch {
-                    return false;
-                }
-            }
-
-            function copyToClipboard(text, platformName) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert(`Texto para ${platformName} copiado para a área de transferência!\n\n"${text}"`);
-                }).catch(err => {
-                    alert('Erro ao copiar. Verifique as permissões do seu navegador.');
-                });
-            }
         });
     </script>
 </body>
