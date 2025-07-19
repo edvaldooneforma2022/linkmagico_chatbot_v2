@@ -13,6 +13,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// Rota principal para servir o painel do chatbot
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
+
 // Função 1: Extrair dados de qualquer site usando ScrapingBee
 async function extractPageData(targetUrl) {
     console.log(`[Extractor] Iniciando extração em: ${targetUrl}`);
